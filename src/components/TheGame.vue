@@ -129,7 +129,17 @@ const killPiece = (pieceCode: string) => {
       teamPieces.queen = false;
       return;
     case "B":
-      teamPieces.bishops[id] = false;
+      teamPieces.bishops[id as keyof typeof teamPieces.bishops] = false;
+      return;
+    case "H":
+      teamPieces.horses[id as keyof typeof teamPieces.horses] = false;
+      return;
+    case "T":
+      teamPieces.towers[id as keyof typeof teamPieces.towers] = false;
+      return;
+    case "P":
+      teamPieces.pawns[id as keyof typeof teamPieces.pawns] = false;
+      return;
   }
 };
 
