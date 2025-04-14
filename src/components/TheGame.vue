@@ -1,139 +1,131 @@
 <script setup lang="ts">
-type CoordinateKey =
-  | "A1"
-  | "A2"
-  | "A3"
-  | "A4"
-  | "A5"
-  | "A6"
-  | "A7"
-  | "A8"
-  | "B1"
-  | "B2"
-  | "B3"
-  | "B4"
-  | "B5"
-  | "B6"
-  | "B7"
-  | "B8"
-  | "C1"
-  | "C2"
-  | "C3"
-  | "C4"
-  | "C5"
-  | "C6"
-  | "C7"
-  | "C8"
-  | "D1"
-  | "D2"
-  | "D3"
-  | "D4"
-  | "D5"
-  | "D6"
-  | "D7"
-  | "D8"
-  | "E1"
-  | "E2"
-  | "E3"
-  | "E4"
-  | "E5"
-  | "E6"
-  | "E7"
-  | "E8"
-  | "F1"
-  | "F2"
-  | "F3"
-  | "F4"
-  | "F5"
-  | "F6"
-  | "F7"
-  | "F8"
-  | "G1"
-  | "G2"
-  | "G3"
-  | "G4"
-  | "G5"
-  | "G6"
-  | "G7"
-  | "G8"
-  | "H1"
-  | "H2"
-  | "H3"
-  | "H4"
-  | "H5"
-  | "H6"
-  | "H7"
-  | "H8";
-
-type Coordinates = {
-  [K in CoordinateKey]: string | null;
+type pieceKey = {
+  king: boolean;
+  queen: boolean;
+  horses: { h1: boolean; h2: boolean };
+  bishops: { b1: boolean; b2: boolean };
+  towers: { t1: boolean; t2: boolean };
+  pawns: {
+    p1: boolean;
+    p2: boolean;
+    p3: boolean;
+    p4: boolean;
+    p5: boolean;
+    p6: boolean;
+    p7: boolean;
+    p8: boolean;
+  };
 };
 
-const cordinates: Coordinates = {
-  A1: null,
-  A2: null,
+const table: Record<string, string | null> = {
+  A1: "wT1",
+  B1: "wH1",
+  C1: "wB1",
+  D1: "wQ1",
+  E1: "wK1",
+  F1: "wB2",
+  G1: "wH2",
+  H1: "wT2",
+  A2: "wP1",
+  B2: "wP2",
+  C2: "wP3",
+  D2: "wP4",
+  E2: "wP5",
+  F2: "wP6",
+  G2: "wP7",
+  H2: "wP8",
   A3: null,
-  A4: null,
-  A5: null,
-  A6: null,
-  A7: null,
-  A8: null,
-  B1: null,
-  B2: null,
   B3: null,
-  B4: null,
-  B5: null,
-  B6: null,
-  B7: null,
-  B8: null,
-  C1: null,
-  C2: null,
   C3: null,
-  C4: null,
-  C5: null,
-  C6: null,
-  C7: null,
-  C8: null,
-  D1: null,
-  D2: null,
   D3: null,
-  D4: null,
-  D5: null,
-  D6: null,
-  D7: null,
-  D8: null,
-  E1: null,
-  E2: null,
   E3: null,
-  E4: null,
-  E5: null,
-  E6: null,
-  E7: null,
-  E8: null,
-  F1: null,
-  F2: null,
   F3: null,
-  F4: null,
-  F5: null,
-  F6: null,
-  F7: null,
-  F8: null,
-  G1: null,
-  G2: null,
   G3: null,
-  G4: null,
-  G5: null,
-  G6: null,
-  G7: null,
-  G8: null,
-  H1: null,
-  H2: null,
   H3: null,
+  A4: null,
+  B4: null,
+  C4: null,
+  D4: null,
+  E4: null,
+  F4: null,
+  G4: null,
   H4: null,
+  A5: null,
+  B5: null,
+  C5: null,
+  D5: null,
+  E5: null,
+  F5: null,
+  G5: null,
   H5: null,
+  A6: null,
+  B6: null,
+  C6: null,
+  D6: null,
+  E6: null,
+  F6: null,
+  G6: null,
   H6: null,
-  H7: null,
-  H8: null,
+  A7: "bP1",
+  B7: "bP2",
+  C7: "bP3",
+  D7: "bP4",
+  E7: "bP5",
+  F7: "bP6",
+  G7: "bP7",
+  H7: "bP8",
+  A8: "bT1",
+  B8: "bH1",
+  C8: "bB1",
+  D8: "bQ1",
+  E8: "bK1",
+  F8: "bB2",
+  G8: "bH2",
+  H8: "bT2",
+};
+const wPieces: pieceKey = {
+  king: true,
+  queen: true,
+  horses: { h1: true, h2: true },
+  bishops: { b1: true, b2: true },
+  towers: { t1: true, t2: true },
+  pawns: {
+    p1: true,
+    p2: true,
+    p3: true,
+    p4: true,
+    p5: true,
+    p6: true,
+    p7: true,
+    p8: true,
+  },
+};
+const bPieces: pieceKey = {
+  king: true,
+  queen: true,
+  horses: { h1: true, h2: true },
+  bishops: { b1: true, b2: true },
+  towers: { t1: true, t2: true },
+  pawns: {
+    p1: true,
+    p2: true,
+    p3: true,
+    p4: true,
+    p5: true,
+    p6: true,
+    p7: true,
+    p8: true,
+  },
+};
+
+const movePiece = (targetPiece: string, targetPosition: string): void => {
+  const oldPosition = () => {
+    for (const piece in table) {
+      if (targetPiece === table[piece]) return piece;
+    }
+  };
+  table.oldPosition = null;
+  table.targetPosition = targetPiece;
 };
 </script>
 
