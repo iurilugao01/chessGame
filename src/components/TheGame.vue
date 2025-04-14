@@ -118,12 +118,32 @@ const bPieces: pieceKey = {
   },
 };
 
+const killPiece = (pieceCode: string) => {
+  const teamPieces = pieceCode[0] === "w" ? wPieces : bPieces;
+  const id = pieceCode[1].toLowerCase() + pieceCode[2];
+  switch (pieceCode[1]) {
+    case "K":
+      teamPieces.king = false;
+      return;
+    case "Q":
+      teamPieces.queen = false;
+      return;
+    case "B":
+      teamPieces.bishops[id] = false;
+  }
+};
+
 const movePiece = (targetPiece: string, targetPosition: string): void => {
+  const team = targetPiece[0];
   const oldPosition = () => {
     for (const piece in table) {
       if (targetPiece === table[piece]) return piece;
     }
   };
+  if (table.targetPosition != null) {
+    if (table.targetPosition[0] === team) return;
+    const enemyTeam = table.targetPosition[0];
+  }
   table.oldPosition = null;
   table.targetPosition = targetPiece;
 };
