@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import TheTable from "./TheTable.vue";
-import { ref, Ref } from "vue";
-import AppPawn from "./pieces/AppPawn.vue";
+import { onMounted, ref } from "vue";
 
 type pieceKey = {
   king: boolean;
@@ -21,7 +20,7 @@ type pieceKey = {
   };
 };
 
-const table: Record<string, string | null> = {
+const table = ref<Record<string, string | null>>({
   A1: "wT1",
   B1: "wH1",
   C1: "wB1",
@@ -86,7 +85,8 @@ const table: Record<string, string | null> = {
   F8: "bB2",
   G8: "bH2",
   H8: "bT2",
-};
+});
+
 const wPieces: pieceKey = {
   king: true,
   queen: true,
@@ -104,6 +104,7 @@ const wPieces: pieceKey = {
     p8: true,
   },
 };
+
 const bPieces: pieceKey = {
   king: true,
   queen: true,
@@ -125,16 +126,19 @@ const bPieces: pieceKey = {
 const movePiece = (targetPiece: string, targetPosition: string): void => {
   const team = targetPiece[0];
   const oldPosition = () => {
-    for (const piece in table) {
-      if (targetPiece === table[piece]) return piece;
+    for (const piece in table.value) {
+      if (targetPiece === table.value[piece]) return piece;
     }
   };
-  if (table.targetPosition != null) {
-    if (table.targetPosition[0] === team) return;
-    killPiece(table.targetPosition);
+  if (table.value[targetPosition] != null) {
+    if (table.value[targetPosition]?.[0] === team) return;
+    killPiece(table.value[targetPosition]!);
   }
-  table.oldPosition = null;
-  table.targetPosition = targetPiece;
+  const oldPositionKey = oldPosition();
+  if (oldPositionKey !== undefined) {
+    table.value[oldPositionKey] = null;
+  }
+  table.value[targetPosition] = targetPiece;
 };
 
 const killPiece = (pieceCode: string) => {
@@ -162,24 +166,20 @@ const killPiece = (pieceCode: string) => {
   }
 };
 
-const formatPosition = (position: number): string => {
-  if (position <= 8) return "A" + position;
-  const collum = (): string => {
-    const options: Record<number, string> = {
-      1: "A",
-      2: "B",
-      3: "C",
-      4: "D",
-      5: "E",
-      6: "F",
-      7: "G",
-      8: "H",
-    };
-    const index = Math.ceil(position / 8);
-    return options[index];
-  };
-  return collum + String(position % 8);
+const formatPosition = (position: number) => {
+  let index = 8;
+  let collum = "A";
+  while (true) {
+    if (position <= index) return collum + (position - (index - 8));
+    index += 8;
+    collum = String.fromCharCode(collum.charCodeAt(0) + 1);
+  }
 };
+
+onMounted(() => {
+  movePiece("bP3", "C5");
+  console.log(table.value.C5);
+});
 </script>
 
 <template>
@@ -187,9 +187,9 @@ const formatPosition = (position: number): string => {
     <template
       v-for="position in 64"
       :key="position"
-      :v-slot="formatPosition(position)"
+      v-slot:[formatPosition(position)]
     >
-      {{ formatPosition(position) }}
+      {{ table[formatPosition(position)] }}
     </template>
   </TheTable>
 </template>
