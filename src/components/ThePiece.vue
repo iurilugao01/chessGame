@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
-
 type PieceKey = {
   name: string;
   images: {
@@ -10,8 +8,9 @@ type PieceKey = {
   showMoves: () => void;
 };
 
-const props = defineProps<{
+defineProps<{
   pieceType: string | null;
+  turn: boolean;
 }>();
 
 const pieces: Record<string, PieceKey> = {
@@ -64,10 +63,6 @@ const pieces: Record<string, PieceKey> = {
     showMoves: () => {},
   },
 };
-
-onMounted(() => {
-  console.log(props.pieceType);
-});
 </script>
 
 <template>

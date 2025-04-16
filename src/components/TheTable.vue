@@ -1,29 +1,24 @@
 <script setup lang="ts">
-function usePosition(value: number): string {
-  const positions: Record<number, string> = {
-    1: "A",
-    2: "B",
-    3: "C",
-    4: "D",
-    5: "E",
-    6: "F",
-    7: "G",
-    8: "H",
-  };
-  const position = positions[value];
-  if (!position) throw new Error(`Invalid value: ${value}`);
-  return position;
-}
-defineExpose({
-  usePosition,
-});
+defineProps<{
+  turn: boolean;
+}>();
+
+const images = {
+  white: "src/assets/images/wKing.svg",
+  black: "src/assets/images/bKing.svg",
+};
+
+const usePosition = (value: number): string =>
+  String.fromCharCode("A".charCodeAt(0) + (value - 1));
 </script>
 
 <template>
   <table class="table-auto">
     <tbody>
       <tr>
-        <td class="h-12 w-12 text-center bg-gray-900"></td>
+        <td class="h-12 w-12 text-center bg-gray-900">
+          <img :src="turn ? images.white : images.black" alt="" />
+        </td>
         <td
           class="h-12 w-12 text-center bg-gray-900"
           v-for="col in 8"

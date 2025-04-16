@@ -87,7 +87,6 @@ const table = ref<Record<string, string | null>>({
   G8: "bH2",
   H8: "bT2",
 });
-
 const wPieces: pieceKey = {
   king: true,
   queen: true,
@@ -105,7 +104,6 @@ const wPieces: pieceKey = {
     p8: true,
   },
 };
-
 const bPieces: pieceKey = {
   king: true,
   queen: true,
@@ -123,22 +121,20 @@ const bPieces: pieceKey = {
     p8: true,
   },
 };
+const turn = ref(true);
 
 const movePiece = (targetPiece: string, targetPosition: string): void => {
   const team = targetPiece[0];
   const oldPosition = () => {
-    for (const piece in table.value) {
+    for (const piece in table.value)
       if (targetPiece === table.value[piece]) return piece;
-    }
   };
   if (table.value[targetPosition] != null) {
     if (table.value[targetPosition]?.[0] === team) return;
     killPiece(table.value[targetPosition]!);
   }
   const oldPositionKey = oldPosition();
-  if (oldPositionKey !== undefined) {
-    table.value[oldPositionKey] = null;
-  }
+  if (oldPositionKey !== undefined) table.value[oldPositionKey] = null;
   table.value[targetPosition] = targetPiece;
 };
 
@@ -184,7 +180,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <TheTable>
+  <TheTable :turn="turn">
     <template
       v-for="position in 64"
       :key="position"
@@ -193,6 +189,7 @@ onMounted(() => {
       <ThePiece
         v-if="table[formatPosition(position)]"
         :pieceType="table[formatPosition(position)]"
+        :turn="turn"
       ></ThePiece>
     </template>
   </TheTable>
