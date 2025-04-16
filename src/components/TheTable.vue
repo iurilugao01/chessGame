@@ -23,9 +23,9 @@ defineExpose({
   <table class="table-auto">
     <tbody>
       <tr>
-        <td class="h-12 w-12 text-center bg-amber-950"></td>
+        <td class="h-12 w-12 text-center bg-gray-900"></td>
         <td
-          class="h-12 w-12 text-center bg-amber-950"
+          class="h-12 w-12 text-center bg-gray-900"
           v-for="col in 8"
           :key="col"
         >
@@ -33,13 +33,13 @@ defineExpose({
         </td>
       </tr>
       <tr v-for="row in 8" :key="row">
-        <td class="h-12 w-12 text-center bg-amber-950">{{ row }}</td>
+        <td class="h-12 w-12 text-center bg-gray-900">{{ row }}</td>
         <td
           v-for="col in 8"
           :class="{
             'h-12 w-12 text-center': true,
             'bg-white': (row + col) % 2,
-            'bg-black': !((row + col) % 2),
+            'bg-green-600': !((row + col) % 2),
           }"
         >
           <slot :name="usePosition(col) + row"> </slot>

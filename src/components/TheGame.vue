@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ThePiece from "./ThePiece.vue";
 import TheTable from "./TheTable.vue";
 import { onMounted, ref } from "vue";
 
@@ -189,7 +190,10 @@ onMounted(() => {
       :key="position"
       v-slot:[formatPosition(position)]
     >
-      {{ table[formatPosition(position)] }}
+      <ThePiece
+        v-if="table[formatPosition(position)]"
+        :pieceType="table[formatPosition(position)]"
+      ></ThePiece>
     </template>
   </TheTable>
 </template>
