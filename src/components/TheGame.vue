@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import ThePiece from "./ThePiece.vue";
 import TheTable from "./TheTable.vue";
-import { onMounted, ref } from "vue";
+import TheGhost from "./TheGhost.vue";
+import { ref } from "vue";
 
 type pieceKey = {
   king: boolean;
@@ -122,6 +123,18 @@ const bPieces: pieceKey = {
   },
 };
 const turn = ref(true);
+const onfocus = ref("");
+const showGhosts = ref<string[]>([]);
+
+const toggleFocus = (code: string, ghosts: string[]) => {
+  if (onfocus.value === code) {
+    showGhosts.value = [];
+    onfocus.value = "";
+    return;
+  }
+  onfocus.value = code;
+  showGhosts.value = [...ghosts];
+};
 
 const movePiece = (targetPiece: string, targetPosition: string): void => {
   const team = targetPiece[0];
@@ -172,11 +185,6 @@ const formatPosition = (position: number) => {
     collum = String.fromCharCode(collum.charCodeAt(0) + 1);
   }
 };
-
-onMounted(() => {
-  movePiece("bP3", "C5");
-  console.log(table.value.C5);
-});
 </script>
 
 <template>
@@ -188,9 +196,17 @@ onMounted(() => {
     >
       <ThePiece
         v-if="table[formatPosition(position)]"
-        :pieceType="table[formatPosition(position)]"
+        @onfocus="(code) => toggleFocus(code)"
+        :pieceCode="table[formatPosition(position)]"
+        :position="formatPosition(position)"
         :turn="turn"
-      ></ThePiece>
+      />
+      <TheGhost
+        v-if="
+          table[formatPosition(position)] == null &&
+          showGhosts.includes(formatPosition(position))
+        "
+      />
     </template>
   </TheTable>
 </template>

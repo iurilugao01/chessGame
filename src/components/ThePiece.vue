@@ -5,11 +5,12 @@ type PieceKey = {
     white: string;
     black: string;
   };
-  showMoves: () => void;
+  showMoves: () => string[];
 };
 
-defineProps<{
-  pieceType: string | null;
+const props = defineProps<{
+  pieceCode: string | null;
+  position: string;
   turn: boolean;
 }>();
 
@@ -60,7 +61,12 @@ const pieces: Record<string, PieceKey> = {
       white: "src/assets/images/wPawn.svg",
       black: "src/assets/images/bPawn.svg",
     },
-    showMoves: () => {},
+    showMoves: () => {
+      const ghosts = [];
+      const value = Number(props.position[1]) + 1;
+      ghosts.push(string(props.position[0] + value));
+      return ghosts;
+    },
   },
 };
 </script>
@@ -68,11 +74,12 @@ const pieces: Record<string, PieceKey> = {
 <template>
   <img
     :src="
-      pieceType[0] === 'w'
-        ? pieces[pieceType[1]].images.white
-        : pieces[pieceType[1]].images.black
+      pieceCode[0] === 'w'
+        ? pieces[pieceCode[1]].images.white
+        : pieces[pieceCode[1]].images.black
     "
-    :alt="pieces[pieceType[1]].name"
-    v-if="pieceType"
+    @click="$emit('onfocus', pieceCode)"
+    :alt="pieces[pieceCode[1]].name"
+    v-if="pieceCode"
   />
 </template>
