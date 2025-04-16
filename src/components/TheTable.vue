@@ -14,6 +14,9 @@ function usePosition(value: number): string {
   if (!position) throw new Error(`Invalid value: ${value}`);
   return position;
 }
+defineExpose({
+  usePosition,
+});
 </script>
 
 <template>
@@ -38,7 +41,9 @@ function usePosition(value: number): string {
             'bg-white': (row + col) % 2,
             'bg-black': !((row + col) % 2),
           }"
-        ></td>
+        >
+          <slot :name="usePosition(col) + row"> </slot>
+        </td>
       </tr>
     </tbody>
   </table>

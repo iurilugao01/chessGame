@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import TheTable from "./TheTable.vue";
+import { ref, Ref } from "vue";
+import AppPawn from "./pieces/AppPawn.vue";
+
 type pieceKey = {
   king: boolean;
   queen: boolean;
@@ -118,6 +122,21 @@ const bPieces: pieceKey = {
   },
 };
 
+const movePiece = (targetPiece: string, targetPosition: string): void => {
+  const team = targetPiece[0];
+  const oldPosition = () => {
+    for (const piece in table) {
+      if (targetPiece === table[piece]) return piece;
+    }
+  };
+  if (table.targetPosition != null) {
+    if (table.targetPosition[0] === team) return;
+    killPiece(table.targetPosition);
+  }
+  table.oldPosition = null;
+  table.targetPosition = targetPiece;
+};
+
 const killPiece = (pieceCode: string) => {
   const teamPieces = pieceCode[0] === "w" ? wPieces : bPieces;
   const id = pieceCode[1].toLowerCase() + pieceCode[2];
@@ -143,20 +162,34 @@ const killPiece = (pieceCode: string) => {
   }
 };
 
-const movePiece = (targetPiece: string, targetPosition: string): void => {
-  const team = targetPiece[0];
-  const oldPosition = () => {
-    for (const piece in table) {
-      if (targetPiece === table[piece]) return piece;
-    }
+const formatPosition = (position: number): string => {
+  if (position <= 8) return "A" + position;
+  const collum = (): string => {
+    const options: Record<number, string> = {
+      1: "A",
+      2: "B",
+      3: "C",
+      4: "D",
+      5: "E",
+      6: "F",
+      7: "G",
+      8: "H",
+    };
+    const index = Math.ceil(position / 8);
+    return options[index];
   };
-  if (table.targetPosition != null) {
-    if (table.targetPosition[0] === team) return;
-    const enemyTeam = table.targetPosition[0];
-  }
-  table.oldPosition = null;
-  table.targetPosition = targetPiece;
+  return collum + String(position % 8);
 };
 </script>
 
-<template></template>
+<template>
+  <TheTable>
+    <template
+      v-for="position in 64"
+      :key="position"
+      :v-slot="formatPosition(position)"
+    >
+      {{ formatPosition(position) }}
+    </template>
+  </TheTable>
+</template>
