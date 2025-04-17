@@ -219,7 +219,7 @@ onMounted(() => {
         v-if="table[formatPosition(position)]"
         class="relative"
         @onfocus="(code, moves) => toggleFocus(code, moves)"
-        :pieceCode="table[formatPosition(position)]"
+        :pieceCode="String(table[formatPosition(position)])"
         :position="formatPosition(position)"
         :table="TheTable"
         :tableOrder="tableOrder"

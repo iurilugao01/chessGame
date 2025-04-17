@@ -9,7 +9,7 @@ type PieceKey = {
 };
 
 const props = defineProps<{
-  pieceCode: string | null;
+  pieceCode: string;
   position: string;
   table: Record<string, string>;
   tableOrder: number;
@@ -24,7 +24,35 @@ const pieces: Record<string, PieceKey> = {
       black: "src/assets/images/bKing.svg",
     },
     showMoves: () => {
-      return ["move"];
+      const ghosts: string[] = [];
+
+      const moves = [];
+      const moveUp = props.position[0] + (Number(props.position[1]) + 1);
+      const moveDown = props.position[0] + (Number(props.position[1]) - 1);
+      const moveRight = String.fromCharCode(
+        props.position[0].charCodeAt(0) + 1
+      );
+      const moveLeft = String.fromCharCode(props.position[0].charCodeAt(0) - 1);
+      const horizontalUpRight = moveRight[0] + moveUp[1];
+      const horizontalUpLeft = moveLeft[0] + moveUp[1];
+      const horizontalDownRight = moveRight[0] + moveDown[1];
+      const horizontalDownLeft = moveLeft[0] + moveDown[1];
+
+      moves.push(
+        moveUp,
+        moveDown,
+        moveRight,
+        moveLeft,
+        horizontalUpRight,
+        horizontalUpLeft,
+        horizontalDownRight,
+        horizontalDownLeft
+      );
+      moves.forEach((el) => {
+        if (props.table[el][0] != props.pieceCode[0]) ghosts.push(el);
+      });
+
+      return ghosts;
     },
   },
   Q: {
@@ -54,7 +82,70 @@ const pieces: Record<string, PieceKey> = {
       black: "src/assets/images/bBishop.svg",
     },
     showMoves: () => {
-      return ["move"];
+      const ghosts: string[] = [];
+
+      for (let i = 1; i <= 8; i++) {
+        const index =
+          String.fromCharCode(props.position[0].charCodeAt(0) + i) +
+          (Number(props.position[1]) + i);
+
+        if (props.table[index][0] == props.pieceCode[0]) break;
+        if (
+          props.table[index][0] != props.pieceCode[0] &&
+          props.table[index] != null
+        ) {
+          ghosts.push(index);
+          break;
+        }
+        ghosts.push(index);
+      }
+      for (let i = 1; i <= 8; i++) {
+        const index =
+          String.fromCharCode(props.position[0].charCodeAt(0) - i) +
+          (Number(props.position[1]) + i);
+
+        if (props.table[index][0] == props.pieceCode[0]) break;
+        if (
+          props.table[index][0] != props.pieceCode[0] &&
+          props.table[index] != null
+        ) {
+          ghosts.push(index);
+          break;
+        }
+        ghosts.push(index);
+      }
+      for (let i = 1; i <= 8; i++) {
+        const index =
+          String.fromCharCode(props.position[0].charCodeAt(0) + i) +
+          (Number(props.position[1]) - i);
+
+        if (props.table[index][0] == props.pieceCode[0]) break;
+        if (
+          props.table[index][0] != props.pieceCode[0] &&
+          props.table[index] != null
+        ) {
+          ghosts.push(index);
+          break;
+        }
+        ghosts.push(index);
+      }
+      for (let i = 1; i <= 8; i++) {
+        const index =
+          String.fromCharCode(props.position[0].charCodeAt(0) - i) +
+          (Number(props.position[1]) - i);
+
+        if (props.table[index][0] == props.pieceCode[0]) break;
+        if (
+          props.table[index][0] != props.pieceCode[0] &&
+          props.table[index] != null
+        ) {
+          ghosts.push(index);
+          break;
+        }
+        ghosts.push(index);
+      }
+
+      return ghosts;
     },
   },
   T: {
@@ -64,7 +155,60 @@ const pieces: Record<string, PieceKey> = {
       black: "src/assets/images/bTower.svg",
     },
     showMoves: () => {
-      return ["move"];
+      const ghosts: string[] = [];
+
+      for (let i = 1; i <= 8; i++) {
+        const index = props.position[0] + (Number(props.position[1]) + i);
+        if (props.table[index][0] == props.pieceCode[0]) break;
+        if (
+          props.table[index][0] != props.pieceCode[0] &&
+          props.table[index] != null
+        ) {
+          ghosts.push(index);
+          break;
+        }
+        ghosts.push(index);
+      }
+      for (let i = 1; i <= 8; i++) {
+        const index = props.position[0] + (Number(props.position[1]) - i);
+        if (props.table[index][0] == props.pieceCode[0]) break;
+        if (
+          props.table[index][0] != props.pieceCode[0] &&
+          props.table[index] != null
+        ) {
+          ghosts.push(index);
+          break;
+        }
+        ghosts.push(index);
+      }
+      for (let i = 1; i <= 8; i++) {
+        const index =
+          String.fromCharCode(props.position[0].charCodeAt(0) + i) +
+          props.position[1];
+        if (props.table[index][0] == props.pieceCode[0]) break;
+        if (
+          props.table[index][0] != props.pieceCode[0] &&
+          props.table[index] != null
+        ) {
+          ghosts.push(index);
+          break;
+        }
+      }
+      for (let i = 1; i <= 8; i++) {
+        const index =
+          String.fromCharCode(props.position[0].charCodeAt(0) - i) +
+          props.position[1];
+        if (props.table[index][0] == props.pieceCode[0]) break;
+        if (
+          props.table[index][0] != props.pieceCode[0] &&
+          props.table[index] != null
+        ) {
+          ghosts.push(index);
+          break;
+        }
+        ghosts.push(index);
+      }
+      return ghosts;
     },
   },
   P: {
@@ -74,29 +218,38 @@ const pieces: Record<string, PieceKey> = {
       black: "src/assets/images/bPawn.svg",
     },
     showMoves: () => {
-      const ghosts = [];
-      if (props.pieceCode == null) return;
+      const ghosts: string[] = [];
+      console.log(props.table.C7);
+
       if (
         (props.pieceCode[0] === "w" && props.tableOrder == 1) ||
         (props.pieceCode[0] === "b" && props.tableOrder == 2)
       ) {
-        const move1 = Number(props.position[1]) + 1;
-        if (props.table[move1] == null)
-          ghosts.push(String(props.position[0] + move1));
+        const moveUp = props.position[0] + (Number(props.position[1]) + 1);
+        if (props.table[moveUp] == null) ghosts.push(moveUp);
+
+        const diagonalLeft = String.fromCharCode(moveUp[0].charCodeAt(0) - 1);
+        if (diagonalLeft[0] != props.pieceCode[0] && diagonalLeft != null)
+          ghosts.push(diagonalLeft);
+
+        const diagonalRight = String.fromCharCode(moveUp[0].charCodeAt(0) + 1);
+        if (diagonalRight[0] != props.pieceCode[0] && diagonalRight != null)
+          ghosts.push(diagonalRight);
 
         if (props.position[1] === "2") {
-          const move2 = Number(props.position[1]) + 2;
-          if (props.table[move1] == null)
-            ghosts.push(String(props.position[0] + move2));
+          const move2 = String(
+            props.position[0] + Number(props.position[1]) + 2
+          );
+          if (props.table[move2] == null) ghosts.push(move2);
         }
       }
       if (
         (props.pieceCode[0] === "b" && props.tableOrder == 1) ||
         (props.pieceCode[0] === "w" && props.tableOrder == 2)
       ) {
-        const move1 = Number(props.position[1]) - 1;
-        if (props.table[move1] == null)
-          ghosts.push(String(props.position[0] + move1));
+        const moveUp = Number(props.position[1]) - 1;
+        if (props.table[moveUp] == null)
+          ghosts.push(String(props.position[0] + moveUp));
         if (props.position[1] === "7") {
           const move2 = Number(props.position[1]) - 2;
           if (props.table[move2] == null)
