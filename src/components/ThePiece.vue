@@ -5,12 +5,13 @@ type PieceKey = {
     white: string;
     black: string;
   };
-  showMoves: () => string[];
+  showMoves: () => string[] | undefined;
 };
 
 const props = defineProps<{
   pieceCode: string | null;
   position: string;
+  table: Record<string, string>;
   turn: boolean;
 }>();
 
@@ -21,7 +22,9 @@ const pieces: Record<string, PieceKey> = {
       white: "src/assets/images/wKing.svg",
       black: "src/assets/images/bKing.svg",
     },
-    showMoves: () => {},
+    showMoves: () => {
+      return ["move"];
+    },
   },
   Q: {
     name: "Queen",
@@ -29,7 +32,9 @@ const pieces: Record<string, PieceKey> = {
       white: "src/assets/images/wQueen.svg",
       black: "src/assets/images/bQueen.svg",
     },
-    showMoves: () => {},
+    showMoves: () => {
+      return ["move"];
+    },
   },
   H: {
     name: "Horse",
@@ -37,7 +42,9 @@ const pieces: Record<string, PieceKey> = {
       white: "src/assets/images/wHorse.svg",
       black: "src/assets/images/bHorse.svg",
     },
-    showMoves: () => {},
+    showMoves: () => {
+      return ["move"];
+    },
   },
   B: {
     name: "Bishop",
@@ -45,7 +52,9 @@ const pieces: Record<string, PieceKey> = {
       white: "src/assets/images/wBishop.svg",
       black: "src/assets/images/bBishop.svg",
     },
-    showMoves: () => {},
+    showMoves: () => {
+      return ["move"];
+    },
   },
   T: {
     name: "Tower",
@@ -53,7 +62,9 @@ const pieces: Record<string, PieceKey> = {
       white: "src/assets/images/wTower.svg",
       black: "src/assets/images/bTower.svg",
     },
-    showMoves: () => {},
+    showMoves: () => {
+      return ["move"];
+    },
   },
   P: {
     name: "Pawn",
@@ -63,8 +74,23 @@ const pieces: Record<string, PieceKey> = {
     },
     showMoves: () => {
       const ghosts = [];
-      const value = Number(props.position[1]) + 1;
-      ghosts.push(string(props.position[0] + value));
+      if (props.pieceCode == null) return;
+      if (props.pieceCode[0] === "w") {
+        const move1 = Number(props.position[1]) + 1;
+        ghosts.push(String(props.position[0] + move1));
+        if (props.position[1] === "2") {
+          const move2 = Number(props.position[1]) + 2;
+          ghosts.push(String(props.position[0] + move2));
+        }
+      }
+      if (props.pieceCode[0] === "b") {
+        const move1 = Number(props.position[1]) - 1;
+        ghosts.push(String(props.position[0] + move1));
+        if (props.position[1] === "7") {
+          const move2 = Number(props.position[1]) - 2;
+          ghosts.push(String(props.position[0] + move2));
+        }
+      }
       return ghosts;
     },
   },
@@ -78,7 +104,7 @@ const pieces: Record<string, PieceKey> = {
         ? pieces[pieceCode[1]].images.white
         : pieces[pieceCode[1]].images.black
     "
-    @click="$emit('onfocus', pieceCode)"
+    @click="$emit('onfocus', pieceCode, pieces[pieceCode[1]].showMoves())"
     :alt="pieces[pieceCode[1]].name"
     v-if="pieceCode"
   />

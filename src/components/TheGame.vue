@@ -134,9 +134,12 @@ const toggleFocus = (code: string, ghosts: string[]) => {
   }
   onfocus.value = code;
   showGhosts.value = [...ghosts];
+  console.log(showGhosts.value);
 };
 
 const movePiece = (targetPiece: string, targetPosition: string): void => {
+  console.log(targetPiece, targetPosition);
+  console.log(table.value.C5);
   const team = targetPiece[0];
   const oldPosition = () => {
     for (const piece in table.value)
@@ -196,15 +199,21 @@ const formatPosition = (position: number) => {
     >
       <ThePiece
         v-if="table[formatPosition(position)]"
-        @onfocus="(code) => toggleFocus(code)"
+        @onfocus="(code, moves) => toggleFocus(code, moves)"
         :pieceCode="table[formatPosition(position)]"
         :position="formatPosition(position)"
+        :table="TheTable"
         :turn="turn"
       />
       <TheGhost
         v-if="
           table[formatPosition(position)] == null &&
           showGhosts.includes(formatPosition(position))
+        "
+        :pieceToMove="onfocus"
+        :newPosition="formatPosition(position)"
+        @movePiece="
+          (pieceToMove, newPosition) => movePiece(pieceToMove, newPosition)
         "
       />
     </template>
