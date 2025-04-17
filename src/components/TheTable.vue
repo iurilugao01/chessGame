@@ -32,7 +32,7 @@ const usePosition = (value: number): string =>
         <td
           v-for="col in 8"
           :class="{
-            'h-12 w-12 text-center': true,
+            'h-12 w-12 relative': true,
             'bg-white': (row + col) % 2,
             'bg-green-600': !((row + col) % 2),
           }"

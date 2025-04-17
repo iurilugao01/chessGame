@@ -12,6 +12,7 @@ const props = defineProps<{
   pieceCode: string | null;
   position: string;
   table: Record<string, string>;
+  tableOrder: number;
   turn: boolean;
 }>();
 
@@ -75,20 +76,31 @@ const pieces: Record<string, PieceKey> = {
     showMoves: () => {
       const ghosts = [];
       if (props.pieceCode == null) return;
-      if (props.pieceCode[0] === "w") {
+      if (
+        (props.pieceCode[0] === "w" && props.tableOrder == 1) ||
+        (props.pieceCode[0] === "b" && props.tableOrder == 2)
+      ) {
         const move1 = Number(props.position[1]) + 1;
-        ghosts.push(String(props.position[0] + move1));
+        if (props.table[move1] == null)
+          ghosts.push(String(props.position[0] + move1));
+
         if (props.position[1] === "2") {
           const move2 = Number(props.position[1]) + 2;
-          ghosts.push(String(props.position[0] + move2));
+          if (props.table[move1] == null)
+            ghosts.push(String(props.position[0] + move2));
         }
       }
-      if (props.pieceCode[0] === "b") {
+      if (
+        (props.pieceCode[0] === "b" && props.tableOrder == 1) ||
+        (props.pieceCode[0] === "w" && props.tableOrder == 2)
+      ) {
         const move1 = Number(props.position[1]) - 1;
-        ghosts.push(String(props.position[0] + move1));
+        if (props.table[move1] == null)
+          ghosts.push(String(props.position[0] + move1));
         if (props.position[1] === "7") {
           const move2 = Number(props.position[1]) - 2;
-          ghosts.push(String(props.position[0] + move2));
+          if (props.table[move2] == null)
+            ghosts.push(String(props.position[0] + move2));
         }
       }
       return ghosts;

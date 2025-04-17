@@ -2,7 +2,7 @@
 import ThePiece from "./ThePiece.vue";
 import TheTable from "./TheTable.vue";
 import TheGhost from "./TheGhost.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 type pieceKey = {
   king: boolean;
@@ -122,7 +122,9 @@ const bPieces: pieceKey = {
     p8: true,
   },
 };
+
 const turn = ref(true);
+const tableOrder = ref(1);
 const onfocus = ref("");
 const showGhosts = ref<string[]>([]);
 
@@ -138,8 +140,7 @@ const toggleFocus = (code: string, ghosts: string[]) => {
 };
 
 const movePiece = (targetPiece: string, targetPosition: string): void => {
-  console.log(targetPiece, targetPosition);
-  console.log(table.value.C5);
+  showGhosts.value = [];
   const team = targetPiece[0];
   const oldPosition = () => {
     for (const piece in table.value)
@@ -188,6 +189,23 @@ const formatPosition = (position: number) => {
     collum = String.fromCharCode(collum.charCodeAt(0) + 1);
   }
 };
+
+const reorderTable = () => {
+  tableOrder.value++;
+  const oldTable = { ...table.value };
+  for (let i = 0; i < 8; i++) {
+    const index = String.fromCharCode("A".charCodeAt(0) + i);
+
+    table.value[index + "1"] = oldTable[index + "8"];
+    table.value[index + "2"] = oldTable[index + "7"];
+    table.value[index + "8"] = oldTable[index + "1"];
+    table.value[index + "7"] = oldTable[index + "2"];
+  }
+};
+
+onMounted(() => {
+  reorderTable();
+});
 </script>
 
 <template>
@@ -199,17 +217,16 @@ const formatPosition = (position: number) => {
     >
       <ThePiece
         v-if="table[formatPosition(position)]"
+        class="relative"
         @onfocus="(code, moves) => toggleFocus(code, moves)"
         :pieceCode="table[formatPosition(position)]"
         :position="formatPosition(position)"
         :table="TheTable"
+        :tableOrder="tableOrder"
         :turn="turn"
       />
       <TheGhost
-        v-if="
-          table[formatPosition(position)] == null &&
-          showGhosts.includes(formatPosition(position))
-        "
+        v-if="showGhosts.includes(formatPosition(position))"
         :pieceToMove="onfocus"
         :newPosition="formatPosition(position)"
         @movePiece="
