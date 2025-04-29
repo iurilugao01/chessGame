@@ -5,7 +5,7 @@ type PieceKey = {
     white: string;
     black: string;
   };
-  showMoves: () => string[] | undefined;
+  showMoves: () => string[];
 };
 
 const props = defineProps<{
@@ -16,6 +16,13 @@ const props = defineProps<{
   turn: boolean;
 }>();
 
+const isValidSquare = (pos: string): boolean => {
+  if (pos.length !== 2) return false;
+  const collum = pos.charCodeAt(0);
+  const position = Number(pos[1]);
+  return collum >= 65 && collum <= 72 && position >= 1 && position <= 8;
+};
+
 const pieces: Record<string, PieceKey> = {
   K: {
     name: "King",
@@ -25,33 +32,27 @@ const pieces: Record<string, PieceKey> = {
     },
     showMoves: () => {
       const ghosts: string[] = [];
-
-      const moves = [];
-      const moveUp = props.position[0] + (Number(props.position[1]) + 1);
-      const moveDown = props.position[0] + (Number(props.position[1]) - 1);
-      const moveRight = String.fromCharCode(
-        props.position[0].charCodeAt(0) + 1
-      );
-      const moveLeft = String.fromCharCode(props.position[0].charCodeAt(0) - 1);
-      const horizontalUpRight = moveRight[0] + moveUp[1];
-      const horizontalUpLeft = moveLeft[0] + moveUp[1];
-      const horizontalDownRight = moveRight[0] + moveDown[1];
-      const horizontalDownLeft = moveLeft[0] + moveDown[1];
-
-      moves.push(
-        moveUp,
-        moveDown,
-        moveRight,
-        moveLeft,
-        horizontalUpRight,
-        horizontalUpLeft,
-        horizontalDownRight,
-        horizontalDownLeft
-      );
-      moves.forEach((el) => {
-        if (props.table[el][0] != props.pieceCode[0]) ghosts.push(el);
-      });
-
+      const [collum, rankChar] = props.position;
+      const rank = Number(rankChar);
+      const deltas = [
+        [0, 1],
+        [0, -1],
+        [1, 0],
+        [-1, 0],
+        [1, 1],
+        [-1, 1],
+        [1, -1],
+        [-1, -1],
+      ];
+      for (const [df, dr] of deltas) {
+        const f = String.fromCharCode(collum.charCodeAt(0) + df);
+        const r = (rank + dr).toString();
+        const index = f + r;
+        if (!isValidSquare(index)) continue;
+        const cell = props.table[index];
+        if (!cell) continue;
+        if (cell[0] !== props.pieceCode[0]) ghosts.push(index);
+      }
       return ghosts;
     },
   },
@@ -83,68 +84,27 @@ const pieces: Record<string, PieceKey> = {
     },
     showMoves: () => {
       const ghosts: string[] = [];
-
-      for (let i = 1; i <= 8; i++) {
-        const index =
-          String.fromCharCode(props.position[0].charCodeAt(0) + i) +
-          (Number(props.position[1]) + i);
-
-        if (props.table[index][0] == props.pieceCode[0]) break;
-        if (
-          props.table[index][0] != props.pieceCode[0] &&
-          props.table[index] != null
-        ) {
+      const [collum, rankChar] = props.position;
+      const rank = Number(rankChar);
+      const directions = [
+        [1, 1],
+        [-1, 1],
+        [1, -1],
+        [-1, -1],
+      ];
+      for (const [df, dr] of directions) {
+        for (let i = 1; i <= 8; i++) {
+          const f = String.fromCharCode(collum.charCodeAt(0) + df * i);
+          const r = (rank + dr * i).toString();
+          const index = f + r;
+          if (!isValidSquare(index)) break;
+          const cell = props.table[index];
+          if (!cell) break;
+          if (cell[0] === props.pieceCode[0]) break;
           ghosts.push(index);
-          break;
+          if (cell[0] !== props.pieceCode[0]) break;
         }
-        ghosts.push(index);
       }
-      for (let i = 1; i <= 8; i++) {
-        const index =
-          String.fromCharCode(props.position[0].charCodeAt(0) - i) +
-          (Number(props.position[1]) + i);
-
-        if (props.table[index][0] == props.pieceCode[0]) break;
-        if (
-          props.table[index][0] != props.pieceCode[0] &&
-          props.table[index] != null
-        ) {
-          ghosts.push(index);
-          break;
-        }
-        ghosts.push(index);
-      }
-      for (let i = 1; i <= 8; i++) {
-        const index =
-          String.fromCharCode(props.position[0].charCodeAt(0) + i) +
-          (Number(props.position[1]) - i);
-
-        if (props.table[index][0] == props.pieceCode[0]) break;
-        if (
-          props.table[index][0] != props.pieceCode[0] &&
-          props.table[index] != null
-        ) {
-          ghosts.push(index);
-          break;
-        }
-        ghosts.push(index);
-      }
-      for (let i = 1; i <= 8; i++) {
-        const index =
-          String.fromCharCode(props.position[0].charCodeAt(0) - i) +
-          (Number(props.position[1]) - i);
-
-        if (props.table[index][0] == props.pieceCode[0]) break;
-        if (
-          props.table[index][0] != props.pieceCode[0] &&
-          props.table[index] != null
-        ) {
-          ghosts.push(index);
-          break;
-        }
-        ghosts.push(index);
-      }
-
       return ghosts;
     },
   },
@@ -156,57 +116,26 @@ const pieces: Record<string, PieceKey> = {
     },
     showMoves: () => {
       const ghosts: string[] = [];
-
-      for (let i = 1; i <= 8; i++) {
-        const index = props.position[0] + (Number(props.position[1]) + i);
-        if (props.table[index][0] == props.pieceCode[0]) break;
-        if (
-          props.table[index][0] != props.pieceCode[0] &&
-          props.table[index] != null
-        ) {
+      const [collum, rankChar] = props.position;
+      const rank = Number(rankChar);
+      const directions = [
+        [0, 1],
+        [0, -1],
+        [1, 0],
+        [-1, 0],
+      ];
+      for (const [df, dr] of directions) {
+        for (let i = 1; i <= 8; i++) {
+          const f = String.fromCharCode(collum.charCodeAt(0) + df * i);
+          const r = (dr === 0 ? rank : rank + dr * i).toString();
+          const index = f + r;
+          if (!isValidSquare(index)) break;
+          const cell = props.table[index];
+          if (!cell) break;
+          if (cell[0] === props.pieceCode[0]) break;
           ghosts.push(index);
-          break;
+          if (cell[0] !== props.pieceCode[0]) break;
         }
-        ghosts.push(index);
-      }
-      for (let i = 1; i <= 8; i++) {
-        const index = props.position[0] + (Number(props.position[1]) - i);
-        if (props.table[index][0] == props.pieceCode[0]) break;
-        if (
-          props.table[index][0] != props.pieceCode[0] &&
-          props.table[index] != null
-        ) {
-          ghosts.push(index);
-          break;
-        }
-        ghosts.push(index);
-      }
-      for (let i = 1; i <= 8; i++) {
-        const index =
-          String.fromCharCode(props.position[0].charCodeAt(0) + i) +
-          props.position[1];
-        if (props.table[index][0] == props.pieceCode[0]) break;
-        if (
-          props.table[index][0] != props.pieceCode[0] &&
-          props.table[index] != null
-        ) {
-          ghosts.push(index);
-          break;
-        }
-      }
-      for (let i = 1; i <= 8; i++) {
-        const index =
-          String.fromCharCode(props.position[0].charCodeAt(0) - i) +
-          props.position[1];
-        if (props.table[index][0] == props.pieceCode[0]) break;
-        if (
-          props.table[index][0] != props.pieceCode[0] &&
-          props.table[index] != null
-        ) {
-          ghosts.push(index);
-          break;
-        }
-        ghosts.push(index);
       }
       return ghosts;
     },
@@ -218,44 +147,45 @@ const pieces: Record<string, PieceKey> = {
       black: "src/assets/images/bPawn.svg",
     },
     showMoves: () => {
+      const tableSide = (): boolean => {
+        if (
+          (props.pieceCode[0] === "w" && props.tableOrder == 1) ||
+          (props.pieceCode[0] === "b" && props.tableOrder == 2)
+        ) {
+          return true;
+        }
+        return false;
+      };
+      const isUp = tableSide();
+
       const ghosts: string[] = [];
-      console.log(props.table.C7);
+      const [collum, rankChar] = props.position;
+      const rank = Number(rankChar);
 
-      if (
-        (props.pieceCode[0] === "w" && props.tableOrder == 1) ||
-        (props.pieceCode[0] === "b" && props.tableOrder == 2)
-      ) {
-        const moveUp = props.position[0] + (Number(props.position[1]) + 1);
-        if (props.table[moveUp] == null) ghosts.push(moveUp);
+      const forward1 = isUp ? 1 : -1;
+      const nextRank1 = collum + (rank + forward1).toString();
+      console.log("nextRank1: " + nextRank1);
+      if (isValidSquare(nextRank1) && !props.table[nextRank1] === null)
+        ghosts.push(nextRank1);
 
-        const diagonalLeft = String.fromCharCode(moveUp[0].charCodeAt(0) - 1);
-        if (diagonalLeft[0] != props.pieceCode[0] && diagonalLeft != null)
-          ghosts.push(diagonalLeft);
-
-        const diagonalRight = String.fromCharCode(moveUp[0].charCodeAt(0) + 1);
-        if (diagonalRight[0] != props.pieceCode[0] && diagonalRight != null)
-          ghosts.push(diagonalRight);
-
-        if (props.position[1] === "2") {
-          const move2 = String(
-            props.position[0] + Number(props.position[1]) + 2
-          );
-          if (props.table[move2] == null) ghosts.push(move2);
-        }
+      const forward2 = isUp ? 2 : -2;
+      if ([2, 7].includes(rank)) {
+        const nextRank2 = collum + (rank + forward2).toString();
+        if (isValidSquare(nextRank2) && props.table[nextRank2] === null)
+          ghosts.push(nextRank2);
       }
-      if (
-        (props.pieceCode[0] === "b" && props.tableOrder == 1) ||
-        (props.pieceCode[0] === "w" && props.tableOrder == 2)
-      ) {
-        const moveUp = Number(props.position[1]) - 1;
-        if (props.table[moveUp] == null)
-          ghosts.push(String(props.position[0] + moveUp));
-        if (props.position[1] === "7") {
-          const move2 = Number(props.position[1]) - 2;
-          if (props.table[move2] == null)
-            ghosts.push(String(props.position[0] + move2));
-        }
+
+      for (const df of [-1, 1]) {
+        const newCollum = String.fromCharCode(collum.charCodeAt(0) + df);
+        const diagonal = newCollum + (rank + forward1).toString();
+        const validateTarget =
+          props.table[diagonal] !== null &&
+          props.table[diagonal][0] != props.pieceCode[0];
+
+        console.log(diagonal);
+        if (isValidSquare(diagonal) && validateTarget) ghosts.push(diagonal);
       }
+
       return ghosts;
     },
   },
@@ -271,6 +201,5 @@ const pieces: Record<string, PieceKey> = {
     "
     @click="$emit('onfocus', pieceCode, pieces[pieceCode[1]].showMoves())"
     :alt="pieces[pieceCode[1]].name"
-    v-if="pieceCode"
   />
 </template>
