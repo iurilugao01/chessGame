@@ -123,7 +123,7 @@ const bPieces: pieceKey = {
   },
 };
 
-const turn = ref(true);
+const whiteTurn = ref(true);
 const tableOrder = ref(1);
 const onfocus = ref("");
 const showGhosts = ref<string[]>([]);
@@ -136,11 +136,11 @@ const toggleFocus = (code: string, ghosts: string[]) => {
   }
   onfocus.value = code;
   showGhosts.value = [...ghosts];
-  console.log(showGhosts.value);
 };
 
 const movePiece = (targetPiece: string, targetPosition: string): void => {
   showGhosts.value = [];
+  whiteTurn.value = !whiteTurn.value;
   const team = targetPiece[0];
   const oldPosition = () => {
     for (const piece in table.value)
@@ -209,7 +209,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <TheTable :turn="turn">
+  <TheTable :turn="whiteTurn">
     <template
       v-for="position in 64"
       :key="position"
@@ -223,7 +223,7 @@ onMounted(() => {
         :position="formatPosition(position)"
         :table="table"
         :tableOrder="tableOrder"
-        :turn="turn"
+        :turn="whiteTurn"
       />
       <TheGhost
         v-if="showGhosts.includes(formatPosition(position))"

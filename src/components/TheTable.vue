@@ -17,7 +17,10 @@ const usePosition = (value: number): string =>
     <tbody>
       <tr>
         <td class="h-12 w-12 text-center bg-gray-900">
-          <img :src="turn ? images.white : images.black" alt="" />
+          <img
+            :src="turn ? images.white : images.black"
+            :alt="turn ? 'turno das peças brancas' : 'turno das peças pretas'"
+          />
         </td>
         <td
           class="h-12 w-12 text-center bg-gray-900"

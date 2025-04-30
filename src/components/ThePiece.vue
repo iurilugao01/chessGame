@@ -24,13 +24,11 @@ const isValidSquare = (pos: string): boolean => {
   const position = Number(pos[1]);
   return collum >= 65 && collum <= 72 && position >= 1 && position <= 8;
 };
-
 const isValidTarget = (pos: string): boolean => {
   const cell = props.table[pos];
   if (cell && cell[0] !== props.pieceCode[0]) return true;
   return false;
 };
-
 const pieces: Record<string, PieceKey> = {
   K: {
     name: "King",
@@ -224,6 +222,10 @@ const pieces: Record<string, PieceKey> = {
     },
   },
 };
+
+const checkTurn = (): boolean =>
+  (props.pieceCode[0] === "w" && props.turn) ||
+  (props.pieceCode[0] === "b" && !props.turn);
 </script>
 
 <template>
@@ -233,7 +235,11 @@ const pieces: Record<string, PieceKey> = {
         ? pieces[pieceCode[1]].images.white
         : pieces[pieceCode[1]].images.black
     "
-    @click="$emit('onfocus', pieceCode, pieces[pieceCode[1]].showMoves())"
+    @click="
+      checkTurn()
+        ? $emit('onfocus', pieceCode, pieces[pieceCode[1]].showMoves())
+        : null
+    "
     :alt="pieces[pieceCode[1]].name"
   />
 </template>
