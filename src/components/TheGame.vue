@@ -221,7 +221,7 @@ onMounted(() => {
         @onfocus="(code, moves) => toggleFocus(code, moves)"
         :pieceCode="String(table[formatPosition(position)])"
         :position="formatPosition(position)"
-        :table="TheTable"
+        :table="table"
         :tableOrder="tableOrder"
         :turn="turn"
       />
