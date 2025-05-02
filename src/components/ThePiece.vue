@@ -33,8 +33,8 @@ const pieces: Record<string, PieceKey> = {
   K: {
     name: "King",
     images: {
-      white: "src/assets/images/wKing.svg",
-      black: "src/assets/images/bKing.svg",
+      white: "/wKing.svg",
+      black: "/bKing.svg",
     },
     showMoves: () => {
       const ghosts: string[] = [];
@@ -62,8 +62,8 @@ const pieces: Record<string, PieceKey> = {
   Q: {
     name: "Queen",
     images: {
-      white: "src/assets/images/wQueen.svg",
-      black: "src/assets/images/bQueen.svg",
+      white: "/wQueen.svg",
+      black: "/bQueen.svg",
     },
     showMoves: () => {
       const ghosts: string[] = [];
@@ -77,8 +77,8 @@ const pieces: Record<string, PieceKey> = {
   H: {
     name: "Horse",
     images: {
-      white: "src/assets/images/wHorse.svg",
-      black: "src/assets/images/bHorse.svg",
+      white: "/wHorse.svg",
+      black: "/bHorse.svg",
     },
     showMoves: () => {
       const ghosts: string[] = [];
@@ -113,8 +113,8 @@ const pieces: Record<string, PieceKey> = {
   B: {
     name: "Bishop",
     images: {
-      white: "src/assets/images/wBishop.svg",
-      black: "src/assets/images/bBishop.svg",
+      white: "/wBishop.svg",
+      black: "/bBishop.svg",
     },
     showMoves: () => {
       const ghosts: string[] = [];
@@ -145,8 +145,8 @@ const pieces: Record<string, PieceKey> = {
   T: {
     name: "Tower",
     images: {
-      white: "src/assets/images/wTower.svg",
-      black: "src/assets/images/bTower.svg",
+      white: "/wTower.svg",
+      black: "/bTower.svg",
     },
     showMoves: () => {
       const ghosts: string[] = [];
@@ -177,8 +177,8 @@ const pieces: Record<string, PieceKey> = {
   P: {
     name: "Pawn",
     images: {
-      white: "src/assets/images/wPawn.svg",
-      black: "src/assets/images/bPawn.svg",
+      white: "/wPawn.svg",
+      black: "/bPawn.svg",
     },
     showMoves: () => {
       const tableSide = (): boolean => {
@@ -240,6 +240,9 @@ const checkTurn = (): boolean =>
         ? $emit('onfocus', pieceCode, pieces[pieceCode[1]].showMoves())
         : null
     "
+    :class="{
+      'cursor-pointer': checkTurn,
+    }"
     :alt="pieces[pieceCode[1]].name"
   />
 </template>

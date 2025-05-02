@@ -4,8 +4,8 @@ defineProps<{
 }>();
 
 const images = {
-  white: "src/assets/images/wKing.svg",
-  black: "src/assets/images/bKing.svg",
+  white: "/wKing.svg",
+  black: "/bKing.svg",
 };
 
 const usePosition = (value: number): string =>

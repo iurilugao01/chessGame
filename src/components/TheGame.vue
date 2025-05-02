@@ -22,6 +22,18 @@ type pieceKey = {
   };
 };
 
+class Register {
+  id: number;
+  table: Record<string, string | null>;
+  turn: boolean;
+
+  constructor() {
+    this.id = register.value.length + 1;
+    this.table = table.value;
+    this.turn = whiteTurn.value;
+  }
+}
+
 const table = ref<Record<string, string | null>>({
   A1: "wT1",
   B1: "wH1",
@@ -127,6 +139,7 @@ const whiteTurn = ref(true);
 const tableOrder = ref(1);
 const onfocus = ref("");
 const showGhosts = ref<string[]>([]);
+const register = ref<Register[]>([]);
 
 const toggleFocus = (code: string, ghosts: string[]) => {
   if (onfocus.value === code) {
@@ -141,6 +154,9 @@ const toggleFocus = (code: string, ghosts: string[]) => {
 const movePiece = (targetPiece: string, targetPosition: string): void => {
   showGhosts.value = [];
   whiteTurn.value = !whiteTurn.value;
+  register.value.push(new Register());
+  console.log(table.value);
+
   const team = targetPiece[0];
   const oldPosition = () => {
     for (const piece in table.value)
@@ -178,6 +194,15 @@ const killPiece = (pieceCode: string) => {
       teamPieces.pawns[id as keyof typeof teamPieces.pawns] = false;
       return;
   }
+};
+
+const revertTable = () => {
+  if (!register.value[0]) return;
+
+  const index = register.value.length - 1;
+  table.value = register.value[index].table;
+  whiteTurn.value = register.value[index].turn;
+  register.value.pop();
 };
 
 const formatPosition = (position: number) => {
@@ -235,4 +260,8 @@ onMounted(() => {
       />
     </template>
   </TheTable>
+  <i
+    class="bi bi-arrow-left-square-fill text-5xl cursor-pointer"
+    @click="revertTable"
+  ></i>
 </template>
