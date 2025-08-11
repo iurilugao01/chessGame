@@ -23,7 +23,7 @@ const usePosition = (value: number): string =>
           />
         </td>
         <td
-          class="h-12 w-12 text-center bg-gray-900"
+          class="h-12 w-12 text-center bg-gray-900 text-gray-50"
           v-for="col in 8"
           :key="col"
         >
@@ -31,7 +31,9 @@ const usePosition = (value: number): string =>
         </td>
       </tr>
       <tr v-for="row in 8" :key="row">
-        <td class="h-12 w-12 text-center bg-gray-900">{{ row }}</td>
+        <td class="h-12 w-12 text-center bg-gray-900 text-gray-50">
+          {{ row }}
+        </td>
         <td
           v-for="col in 8"
           :class="{

@@ -153,8 +153,8 @@ const toggleFocus = (code: string, ghosts: string[]) => {
 
 const movePiece = (targetPiece: string, targetPosition: string): void => {
   showGhosts.value = [];
-  whiteTurn.value = !whiteTurn.value;
   register.value.push(new Register());
+  whiteTurn.value = !whiteTurn.value;
   console.log(table.value);
 
   const team = targetPiece[0];
@@ -199,8 +199,12 @@ const killPiece = (pieceCode: string) => {
 const revertTable = () => {
   if (!register.value[0]) return;
 
-  const index = register.value.length - 1;
+  const index = 0;
   table.value = register.value[index].table;
+  console.log("tabuleiro:");
+  console.log(table.value);
+  console.log("registro:");
+  console.log(register.value[index]);
   whiteTurn.value = register.value[index].turn;
   register.value.pop();
 };
@@ -234,34 +238,38 @@ onMounted(() => {
 </script>
 
 <template>
-  <TheTable :turn="whiteTurn">
-    <template
-      v-for="position in 64"
-      :key="position"
-      v-slot:[formatPosition(position)]
-    >
-      <ThePiece
-        v-if="table[formatPosition(position)]"
-        class="relative"
-        @onfocus="(code, moves) => toggleFocus(code, moves)"
-        :pieceCode="String(table[formatPosition(position)])"
-        :position="formatPosition(position)"
-        :table="table"
-        :tableOrder="tableOrder"
-        :turn="whiteTurn"
-      />
-      <TheGhost
-        v-if="showGhosts.includes(formatPosition(position))"
-        :pieceToMove="onfocus"
-        :newPosition="formatPosition(position)"
-        @movePiece="
-          (pieceToMove, newPosition) => movePiece(pieceToMove, newPosition)
-        "
-      />
-    </template>
-  </TheTable>
-  <i
-    class="bi bi-arrow-left-square-fill text-5xl cursor-pointer"
-    @click="revertTable"
-  ></i>
+  <div
+    class="flex flex-col items-center gap-4 min-w-screen min-h-screen bg-gray-950"
+  >
+    <TheTable :turn="whiteTurn" class="mt-4">
+      <template
+        v-for="position in 64"
+        :key="position"
+        v-slot:[formatPosition(position)]
+      >
+        <ThePiece
+          v-if="table[formatPosition(position)]"
+          class="relative"
+          @onfocus="(code, moves) => toggleFocus(code, moves)"
+          :pieceCode="String(table[formatPosition(position)])"
+          :position="formatPosition(position)"
+          :table="table"
+          :tableOrder="tableOrder"
+          :turn="whiteTurn"
+        />
+        <TheGhost
+          v-if="showGhosts.includes(formatPosition(position))"
+          :pieceToMove="onfocus"
+          :newPosition="formatPosition(position)"
+          @movePiece="
+            (pieceToMove, newPosition) => movePiece(pieceToMove, newPosition)
+          "
+        />
+      </template>
+    </TheTable>
+    <i
+      class="bi bi-arrow-left-square-fill text-5xl cursor-pointer text-gray-200"
+      @click="revertTable"
+    ></i>
+  </div>
 </template>
